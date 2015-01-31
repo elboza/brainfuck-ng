@@ -68,7 +68,7 @@ int brainfuck(char *v,char *given_env){
 		}
 		ip++;
 	}
-	return 0;
+	return *ptr;
  }
  char* find_next_paren(char *ip){
 	int nest=1;
