@@ -9,8 +9,14 @@
 #include "main.h"
 #include "brainfuck.h"
  
- void brainfuck(char *v){
-	char *a=(char*)calloc(0,MAX_DIM);
+int brainfuck(char *v,char *given_env){
+	char *a;
+	if(!given_env){
+		a=(char*)calloc(0,MAX_DIM);
+	}
+	else{
+		a=given_env;
+	}
 	if(!a) die("error alloc memory");
 	char *ip=v,*ptr=a;
 	int x;
@@ -35,8 +41,8 @@
 				*ptr=(char)getchar();
 				break;
 			case '@':
-				//quit
-				return;
+				//quit returning *ptr vaule
+				return(*ptr);
 			break;
 			case '[':
 				if(*ptr==0) {ip=find_next_paren(++ip);--ip;}
@@ -62,22 +68,23 @@
 		}
 		ip++;
 	}
+	return 0;
  }
  char* find_next_paren(char *ip){
 	int nest=1;
 	while(nest){
-		if(*ip=='[') {nest++;break;}
-		if(*ip==']') {nest--;break;}
+		if(*ip=='[') {nest++;}
+		if(*ip==']') {nest--;}
 		++ip;
 	}
-	return ip;
+	return --ip;
  }
  char* find_prev_paren(char *ip){
 	 int nest=1;
 	 while(nest){
-		 if(*ip==']') {nest++;break;}
-		 if(*ip=='[') {nest--;break;}
+		 if(*ip==']') {nest++;}
+		 if(*ip=='[') {nest--;}
 		 --ip;
 	 }
-	 return ip;
+	 return ++ip;
  }

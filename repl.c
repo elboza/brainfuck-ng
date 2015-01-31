@@ -41,11 +41,11 @@ char* rl_gets (char *prompt)
 	
 	return (line_read);
 }
-void repl()
+int repl(char *given_env)
 {
 	char *cmd,prompt[255];
 	quit_shell=0;
-	int line_no=1;
+	int line_no=1,ret;
 	//if(check_funny()) funny_shell_disclaimer(); else normal_shell_disclaimer();
 	//printf("entering shell-interactive mode...\n");
 	#ifdef HAVE_LIBREADLINE
@@ -60,26 +60,27 @@ void repl()
 		cmd=(char*)malloc(MAX_CMD);
 		fgets(cmd,MAX_CMD,stdin);
 		#endif
-		execute(cmd);
+		ret=execute(cmd,given_env);
 		#ifndef HAVE_LIBREADLINE
 		if(cmd) free(cmd);
 		#endif
 	}
-	
+	return ret;
 }
 void show_help(){
 	printf("brainfuck interpreter, by Fernando Iazeolla 2015(c)\n");
-	printf(":q        exit interpreter\n");
-	printf(":h        this help\n");
-	printf(":l file   load file\n");
-	printf(":env      show interpreter variables\n");
+	printf(":q                ~ exit interpreter\n");
+	printf(":h                ~ this help\n");
+	printf(":l file           ~ load file\n");
+	printf(":env              ~ show interpreter variables\n");
+	printf(":keepstate yes|no ~ keep state environment array after command enter.\n");
 }
-void execute(char *s)
+int execute(char *s,char *given_env)
 {
-	if(!s) return;
+	if(!s) return 0;
 	if((strcmp(s,":q"))==0) {quit_shell=1;}
 	if((strcmp(s,":h"))==0) show_help();
-	else{brainfuck(s);}
-	
+	else{return brainfuck(s,given_env);}
+	return 0;
 }
 

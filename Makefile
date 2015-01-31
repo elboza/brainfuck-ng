@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS= -std=c99 -Wall
 LIBS= -lm -lreadline
 OBJECTS= main.o brainfuck.o repl.o
-TARGET=bf
+TARGET=bfng
 
 all: $(TARGET)
 
