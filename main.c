@@ -138,7 +138,7 @@ void runstdin(char *given_env,int print_env,struct mret *ret){
 int main(int argc,char **argv)
 {
 	struct m_action action;
-	char filename[FILENAME_LEN],*given_env;
+	char filename[FILENAME_LEN],*given_env=NULL;
 	struct mret ret;
 	ret.a=NULL;
 	ret.ret=0;
@@ -168,6 +168,6 @@ int main(int argc,char **argv)
 	log_d("Bye.");
 	if(action.print_env==1) printf("%s",ret.a);
 	if(action.print_env==2) printf("%s\n",ret.a);
-	if(ret.a) free(ret.a);
+	if(ret.a && !given_env) free(ret.a);
 	return ret.ret;
 }
