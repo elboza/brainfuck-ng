@@ -1,5 +1,5 @@
-int repl(char *given_env);
+void repl(char *given_env,struct mret *ret);
 int quit_shell;
 #define MAX_CMD 1024
 char* rl_gets (char *prompt);
-int execute(char *s,char *given_env);
+void execute(char *s,char *given_env,struct mret *ret);

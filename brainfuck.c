@@ -9,13 +9,16 @@
 #include "main.h"
 #include "brainfuck.h"
  
-int brainfuck(char *v,char *given_env){
+void brainfuck(char *v,char *given_env,int print_env,struct mret *ret){
 	char *a;
+	int len;
 	if(!given_env){
 		a=(char*)calloc(0,MAX_DIM);
+		len=MAX_DIM;
 	}
 	else{
 		a=given_env;
+		len=strlen(a);
 	}
 	if(!a) die("error alloc memory");
 	char *ip=v,*ptr=a;
@@ -26,7 +29,7 @@ int brainfuck(char *v,char *given_env){
 				ptr--;if(ptr<a) ptr=a;
 				break;
 			case '>':
-				ptr++;
+				ptr++;if(ptr>a+len) ptr=a+len;
 				break;
 			case '+':
 				++*ptr;
@@ -42,7 +45,9 @@ int brainfuck(char *v,char *given_env){
 				break;
 			case '@':
 				//quit returning *ptr vaule
-				return(*ptr);
+				ret->ret=*ptr;
+				ret->a=a;
+				return;
 			break;
 			case '[':
 				if(*ptr==0) {ip=find_next_paren(++ip);--ip;}
@@ -68,7 +73,8 @@ int brainfuck(char *v,char *given_env){
 		}
 		ip++;
 	}
-	return *ptr;
+	ret->ret=*ptr;
+	ret->a=a;
  }
  char* find_next_paren(char *ip){
 	int nest=1;

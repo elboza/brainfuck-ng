@@ -16,6 +16,7 @@ struct m_action{
 	int shell;
 	int stdin;
 	int data;
+	int print_env;
 };
 void log_d(char *s){
 	if(!s) return;
@@ -37,6 +38,8 @@ void usage()
 	printf("-v              --version                    prints brainfuck-ng version number\n");
 	printf("-s              --stdin                      read fron stdin\n");
 	printf("-d              --data                       set environment-array\n");
+	printf("-o              --out                        print env-array to stdout after computation\n");
+	printf("-p              --print                      same as -o but with newline added.\n");
 	exit(1);
 }
 void usage_b()
@@ -51,6 +54,7 @@ char* parse_args(int argc,char **argv,struct m_action *action)
 	action->file=0;
 	action->stdin=0;
 	action->data=0;
+	action->print_env=0;
 	char *given_env=NULL;
 	while (1)
 	{
@@ -61,12 +65,14 @@ char* parse_args(int argc,char **argv,struct m_action *action)
 			{"help",no_argument,0,'h'},
 			{"version",no_argument,0,'v'},
 			{"stdin",no_argument,0,'s'},
+			{"out",no_argument,0,'o'},
+			{"print",no_argument,0,'p'},
 			{"data",required_argument,0,'d'},
 			{0,0,0,0,}
 			
 		};
 		int option_index = 0;
-		c = getopt_long (argc, argv, "vhisd:",long_options, &option_index);
+		c = getopt_long (argc, argv, "vhisd:op",long_options, &option_index);
 		if (c == -1) break;
 		switch(c)
 		{
@@ -83,6 +89,12 @@ char* parse_args(int argc,char **argv,struct m_action *action)
 				action->data=1;
 				given_env=optarg;
 				break;
+			case 'o':
+				action->print_env=1;
+				break;
+			case 'p':
+				action->print_env=2;
+				break;
 			case 'h':
 			case '?':
 				usage();
@@ -95,10 +107,9 @@ char* parse_args(int argc,char **argv,struct m_action *action)
 	}
 	return given_env;
 }
-int run (char *filename,char *given_env){
+void run (char *filename,char *given_env,int print_env,struct mret *ret){
 	FILE *fp;
 	long len;
-	int ret;
 	char *v,dd[FILENAME_LEN];
 	if((fp=fopen(filename,"r"))==0) die("error opening file.");
 	fseek(fp,0L,SEEK_END);
@@ -109,31 +120,28 @@ int run (char *filename,char *given_env){
 	v=(char*)malloc(len);
 	fread(v,1,len,fp);
 	fclose(fp);
-	ret=brainfuck(v,given_env);
+	brainfuck(v,given_env,print_env,ret);
 	free(v);
-	return ret;
 }
-int shell(char *given_env){
-	int ret;
+void shell(char *given_env,struct mret *ret){
 	printf("entering shell-interactive mode...(type :h for help)\n");
-	ret=repl(given_env);
+	repl(given_env,ret);
 	printf("Bye.\n");
-	return ret;
 }
-int runstdin(char *given_env){
-	int ret;
+void runstdin(char *given_env,int print_env,struct mret *ret){
 	char *prog=(char*)malloc(1024);
 	if(!prog) die("error alloc memory");
 	read(0,prog,1024);
-	ret=brainfuck(prog,given_env);
+	brainfuck(prog,given_env,print_env,ret);
 	free(prog);
-	return ret;
 }
 int main(int argc,char **argv)
 {
 	struct m_action action;
 	char filename[FILENAME_LEN],*given_env;
-	int ret=0;
+	struct mret ret;
+	ret.a=NULL;
+	ret.ret=0;
 	given_env=parse_args(argc,argv,&action);
 	
 	if(argc<2) usage_b();
@@ -146,17 +154,20 @@ int main(int argc,char **argv)
 		action.file=0;
 	}
 	if(action.stdin){
-		ret=runstdin(given_env);
+		runstdin(given_env,action.print_env,&ret);
 	}
 	if(action.file)
 	{
-		ret=run(filename,given_env);
+		run(filename,given_env,action.print_env,&ret);
 	}
 	if(action.shell)
 	{
-		ret=shell(given_env);
+		shell(given_env,&ret);
 	}
 	
 	log_d("Bye.");
-	return ret;
+	if(action.print_env==1) printf("%s",ret.a);
+	if(action.print_env==2) printf("%s\n",ret.a);
+	if(ret.a) free(ret.a);
+	return ret.ret;
 }
