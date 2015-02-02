@@ -15,7 +15,8 @@
 #include "repl.h"
 #include "brainfuck.h"
 
-//extern char *strtok_r(char *, const char *, char **);
+extern char *strtok_r(char *, const char *, char **);
+//for linux u can use __strtok_r
 
 // char* rl_gets(char *s){
 // 	char* input = readline(s);
@@ -32,15 +33,15 @@ char* rl_gets (char *prompt)
 		free (line_read);
 		line_read = (char *)NULL;
 	}
-	
+
 	/* Get a line from the user. */
 	line_read = (char *)readline (prompt);
-	
+
 	/* If the line has any text in it,
 	 *    save it on the history. */
 	if (line_read && *line_read)
 		add_history (line_read);
-	
+
 	return (line_read);
 }
 void repl(char *given_env,struct mret *ret)
@@ -89,7 +90,7 @@ void execute(char *s,char *given_env,struct mret *ret)
 	if((strcmp(s,":ks"))==0) {(ks?printf("ks=yes\n"):printf("ks=no\n"));}
 	if((strcmp(s,":p"))==0) {if(given_env) printf("%s\n",given_env);}
 	if((strcmp(s,":z"))==0) {printf("%d\n",ret->ret);}
-	__strtok_r(s," ",&ns);
+	strtok_r(s," ",&ns);
 	if((strcmp(s,":ks"))==0){
 		if(ns){
 			if((strcmp(ns,"yes"))==0) ks=1;
@@ -99,4 +100,3 @@ void execute(char *s,char *given_env,struct mret *ret)
 	if((strcmp(s,":l"))==0){if(ns){run(ns,given_env,ret);}}
 	brainfuck(s,given_env,ret);
 }
-
