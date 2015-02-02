@@ -9,7 +9,7 @@
 #include "main.h"
 #include "brainfuck.h"
  
-void brainfuck(char *v,char *given_env,int print_env,struct mret *ret){
+void brainfuck(char *v,char *given_env,struct mret *ret){
 	char *a;
 	int len;
 	if(!given_env){

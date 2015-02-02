@@ -19,5 +19,6 @@ struct mret{
 	int ret;
 	char *a;
 };
+void run (char *filename,char *given_env,struct mret *ret);
 
 #endif

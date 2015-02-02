@@ -15,6 +15,8 @@
 #include "repl.h"
 #include "brainfuck.h"
 
+//extern char *strtok_r(char *, const char *, char **);
+
 // char* rl_gets(char *s){
 // 	char* input = readline(s);
 // 	add_history(input);
@@ -61,6 +63,8 @@ void repl(char *given_env,struct mret *ret)
 		fgets(cmd,MAX_CMD,stdin);
 		#endif
 		execute(cmd,given_env,ret);
+		if(ks==1){given_env=ret->a;}
+		if(ks==0){if(given_env){free(given_env);given_env=NULL;}}
 		#ifndef HAVE_LIBREADLINE
 		if(cmd) free(cmd);
 		#endif
@@ -70,16 +74,29 @@ void show_help(){
 	printf("brainfuck-ng interpreter, by Fernando Iazeolla 2015(c)\n");
 	printf(":q                ~ exit interpreter\n");
 	printf(":h                ~ this help\n");
-	printf(":l file           ~ load file\n");
-	printf(":env              ~ show interpreter variables\n");
+	//printf(":l file           ~ load file\n");
+	//printf(":env              ~ show interpreter variables\n");
 	printf(":ks (yes|no)      ~ keep state environment array after command enter.\n");
-	printf(":arr              ~ printf anvironment-array to stdout\n");
+	printf(":p                ~ print environment-array to stdout\n");
+	printf(":z                ~ print last return value,\n");
 }
 void execute(char *s,char *given_env,struct mret *ret)
 {
+	char *ns=NULL;
 	if(!s) return;
 	if((strcmp(s,":q"))==0) {quit_shell=1;}
-	if((strcmp(s,":h"))==0) show_help();
-	else{brainfuck(s,given_env,0,ret);}
+	if((strcmp(s,":h"))==0) {show_help();}
+	if((strcmp(s,":ks"))==0) {(ks?printf("ks=yes\n"):printf("ks=no\n"));}
+	if((strcmp(s,":p"))==0) {if(given_env) printf("%s\n",given_env);}
+	if((strcmp(s,":z"))==0) {printf("%d\n",ret->ret);}
+	__strtok_r(s," ",&ns);
+	if((strcmp(s,":ks"))==0){
+		if(ns){
+			if((strcmp(ns,"yes"))==0) ks=1;
+			if((strcmp(ns,"no"))==0) ks=0;
+		}
+	}
+	if((strcmp(s,":l"))==0){if(ns){run(ns,given_env,ret);}}
+	brainfuck(s,given_env,ret);
 }
 

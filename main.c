@@ -56,6 +56,7 @@ char* parse_args(int argc,char **argv,struct m_action *action)
 	action->data=0;
 	action->print_env=0;
 	char *given_env=NULL;
+	ks=0;
 	while (1)
 	{
 		static struct option long_options[] =
@@ -88,6 +89,7 @@ char* parse_args(int argc,char **argv,struct m_action *action)
 			case 'd':
 				action->data=1;
 				given_env=optarg;
+				ks=1;
 				break;
 			case 'o':
 				action->print_env=1;
@@ -107,20 +109,20 @@ char* parse_args(int argc,char **argv,struct m_action *action)
 	}
 	return given_env;
 }
-void run (char *filename,char *given_env,int print_env,struct mret *ret){
+void run (char *filename,char *given_env,struct mret *ret){
 	FILE *fp;
 	long len;
 	char *v,dd[FILENAME_LEN];
-	if((fp=fopen(filename,"r"))==0) die("error opening file.");
+	if((fp=fopen(filename,"r"))==0) {printf("error opening file.\n");ret->ret=1;return;}
 	fseek(fp,0L,SEEK_END);
 	len=ftell(fp);
 	fseek(fp,0L,SEEK_SET);
 	sprintf(dd,"%s %ld",filename,len);
 	log_d(dd);
-	v=(char*)malloc(len);
+	v=(char*)calloc(0,len+1);
 	fread(v,1,len,fp);
 	fclose(fp);
-	brainfuck(v,given_env,print_env,ret);
+	brainfuck(v,given_env,ret);
 	free(v);
 }
 void shell(char *given_env,struct mret *ret){
@@ -128,11 +130,11 @@ void shell(char *given_env,struct mret *ret){
 	repl(given_env,ret);
 	printf("Bye.\n");
 }
-void runstdin(char *given_env,int print_env,struct mret *ret){
+void runstdin(char *given_env,struct mret *ret){
 	char *prog=(char*)malloc(1024);
 	if(!prog) die("error alloc memory");
 	read(0,prog,1024);
-	brainfuck(prog,given_env,print_env,ret);
+	brainfuck(prog,given_env,ret);
 	free(prog);
 }
 int main(int argc,char **argv)
@@ -154,11 +156,11 @@ int main(int argc,char **argv)
 		action.file=0;
 	}
 	if(action.stdin){
-		runstdin(given_env,action.print_env,&ret);
+		runstdin(given_env,&ret);
 	}
 	if(action.file)
 	{
-		run(filename,given_env,action.print_env,&ret);
+		run(filename,given_env,&ret);
 	}
 	if(action.shell)
 	{
