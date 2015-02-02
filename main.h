@@ -9,7 +9,8 @@
 //#define DEBUG 1
 #define DEBUG 0
 #define MAX_DIM 30000
-#define HAVE_LIBREADLINE 1
+#define HAVE_LIBREADLINE
+//#undef HAVE_LIBREADLINE
 #define FILENAME_LEN 255
 #define VERSION "0.1"
 

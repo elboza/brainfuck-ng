@@ -8,6 +8,7 @@
 // #include <editline/readline.h>
 // #include <editline/history.h>
 #include "main.h"
+#include "config.h"
 #ifdef HAVE_LIBREADLINE
 #include<readline/readline.h>
 #include<readline/history.h>
@@ -17,12 +18,32 @@
 
 extern char *strtok_r(char *, const char *, char **);
 //for linux u can use __strtok_r
+extern char *strdup(const char *s);
 
 // char* rl_gets(char *s){
 // 	char* input = readline(s);
 // 	add_history(input);
 // 	return input;
 // }
+char *ltrim(char *s)
+{
+	while(isspace(*s)) s++;
+	return s;
+}
+
+char *rtrim(char *s)
+{
+	char* back = s + strlen(s);
+	while(isspace(*--back));
+	*(back+1) = '\0';
+	return s;
+}
+
+char *trim(char *s)
+{
+	return rtrim(ltrim(s)); 
+}
+#ifdef HAVE_LIBREADLINE
 char* rl_gets (char *prompt)
 {
 	static char *line_read = (char *)NULL;
@@ -44,6 +65,7 @@ char* rl_gets (char *prompt)
 
 	return (line_read);
 }
+#endif
 void repl(char *given_env,struct mret *ret)
 {
 	char *cmd,prompt[255];
@@ -56,12 +78,14 @@ void repl(char *given_env,struct mret *ret)
 	#endif
 	while(!quit_shell)
 	{
-		#ifdef HAVE_LIBREADLINE
 		sprintf(prompt,"bf~%d~ ",line_no++);
+		#ifdef HAVE_LIBREADLINE
 		cmd=rl_gets(prompt);
 		#else
+		printf("%s",prompt);
 		cmd=(char*)malloc(MAX_CMD);
 		fgets(cmd,MAX_CMD,stdin);
+		cmd[strlen(cmd) - 1] = '\0';
 		#endif
 		execute(cmd,given_env,ret);
 		if(ks==1){given_env=ret->a;}
@@ -75,11 +99,12 @@ void show_help(){
 	printf("brainfuck-ng interpreter, by Fernando Iazeolla 2015(c)\n");
 	printf(":q                ~ exit interpreter\n");
 	printf(":h                ~ this help\n");
-	//printf(":l file           ~ load file\n");
+	printf(":l file           ~ load file\n");
 	//printf(":env              ~ show interpreter variables\n");
 	printf(":ks (yes|no)      ~ keep state environment array after command enter.\n");
 	printf(":p                ~ print environment-array to stdout\n");
 	printf(":z                ~ print last return value,\n");
+	printf(":set datum        ~ set datum as enviroment array string (and keep state (:ks yes))\n");
 }
 void execute(char *s,char *given_env,struct mret *ret)
 {
@@ -97,6 +122,12 @@ void execute(char *s,char *given_env,struct mret *ret)
 			if((strcmp(ns,"no"))==0) ks=0;
 		}
 	}
-	if((strcmp(s,":l"))==0){if(ns){run(ns,given_env,ret);}}
+	if((strcmp(s,":set"))==0){
+		if(ns){
+			ks=1;
+			given_env=strdup(ns);
+		}
+	}
+	if((strcmp(s,":l"))==0){if(ns){run(trim(ns),given_env,ret);}}
 	brainfuck(s,given_env,ret);
 }
