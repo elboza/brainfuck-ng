@@ -8,7 +8,7 @@
 #include<unistd.h>
 #include "main.h"
 #include "brainfuck.h"
- 
+
 void brainfuck(char *v,char *given_env,struct mret *ret){
 	char *a;
 	int len;
@@ -44,7 +44,7 @@ void brainfuck(char *v,char *given_env,struct mret *ret){
 				*ptr=(char)getchar();
 				break;
 			case '@':
-				//quit returning *ptr vaule
+				//quit returning *ptr value
 				ret->ret=*ptr;
 				ret->a=a;
 				return;
@@ -68,7 +68,7 @@ void brainfuck(char *v,char *given_env,struct mret *ret){
 				*ptr=(char)x;
 				break;
 			default:
-				
+
 			break;
 		}
 		ip++;

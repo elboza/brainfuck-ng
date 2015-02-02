@@ -1,0 +1,115 @@
+.TH brainfuck-ng 1 "(c) 2015 Fernando Iazeolla"
+.SH NAME
+brainfuck-ng - a powerful interpreter of a superset of brainfuck lang.
+.SH SYNOPSIS
+.B bfng [ options ] [ file ]
+.SH DESCRIPTION
+.B brainfuck-ng
+is a powerful interpreter of a superset of brainfuck language. It is full compatible with brainfuck, and has in addition some enhancements.
+.SH OPTIONS
+.TP
+.B -i, --interactive, --shell
+interactive (shell mode)
+.TP
+.B -d 'datum', --data 'datum'
+give an environment as a string (seen as an array).
+.P
+For example,
+.B bfng -d 'FooBar' -i
+will will enter the shell mode with the datum 'FooBar' as the computation environment array.
+.TP
+.B -h, --help
+print usage info
+.TP
+.B -s
+will read the program from stdin.
+.TP
+.B -v, --version
+show brainfuck-ng's version number
+.TP
+.B -o, --out
+print the environment array to stdout after computation.
+.TP
+.B -p, --print
+same as -o but with newline added. '\n'
+.TP
+.SH BRAINFUCK-NG'S LANGUAGE
+.TP
+.B <
+decrement the data pointer (to point to the next cell to the left). ( --ptr ).
+.TP
+.B >
+increment the data pointer (to point to the next cell to the right). ( ++ptr ).
+.TP
+.B +
+increment (increase by one) the byte at the data pointer. ( ++*ptr ).
+.TP
+.B -
+decrement (decrease by one) the byte at the data pointer. ( --*ptr ).
+.TP
+.B .
+output the byte at the data pointer. ( putchar(*ptr) ).
+.TP
+.B ,
+accept one byte of input, storing its value in the byte at the data pointer. ( *ptr=getchar() ).
+.TP
+.B [
+if the byte at the data pointer is zero, then instead of moving the instruction pointer forward to the next command, jump it forward to the command after the matching ] command. ( while (*ptr) { ).
+.TP
+.B ]
+if the byte at the data pointer is nonzero, then instead of moving the instruction pointer forward to the next command, jump it back to the command after the matching [ command. ( } ).
+.TP
+ng ENHANCEMENTS
+.TP
+.B !
+output the integer at the data pointer. ( printf("%d",*ptr) ).
+.TP
+.B ?
+gets an integer and dtore it  into the data pointer. ( scanf("%d",(char)ptr) ).
+.TP
+.B @
+quit returning data pointer value. ( return *ptr ).
+.TP
+every other character is ignored.
+.SH RETURN VALUE
+.TP
+brainfuck-ng's interpreter always return the value poited at the last instruction executed.
+.TP
+example:
+echo "+++>++" | bfng -s
+
+echo $?
+(will output 2)
+.TP
+by adding -o or -p parameter you can get also the environment printed to stdout.
+.TP
+example:
+echo "+" | bfng -s -d'foo' -p
+
+(will output 'goo')
+
+echo $?
+(will output 103 (ascii of 'g'))
+.SH EXAMPLES
+
+.SH SEE ALSO
+
+.SH AUTHOR
+.nf
+Fernando Iazeolla < fernando.iazeolla_FOobAr_gmail_Baz_com, by replacing _fOoBar_ with a @ and _Baz_ with a . > - founder & core developer.
+.SH COPYRIGHT
+.nf
+Copyright (C) 2015 Fernando Iazeolla < fernando.iazeolla_FOobAr_gmail_Baz_com, by replacing _fOoBar_ with a @ and _Baz_ with a . >
+.P
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+.P
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+.P
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
