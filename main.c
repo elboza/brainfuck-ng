@@ -17,6 +17,10 @@ struct m_action{
 	int stdin;
 	int data;
 	int print_env;
+	int cin;
+	int exec;
+	int xfile;
+	int dfile;
 };
 void log_d(char *s){
 	if(!s) return;
@@ -33,13 +37,17 @@ void usage()
 	printf("\nUSAGE: ");
 	printf("bfng [options] [file]\n");
 	printf("valid options:\n");
-	printf("-i              --shell --interactive        interactive (shell mode)\n");
-	printf("-h              --help                       show this help\n");
-	printf("-v              --version                    prints brainfuck-ng version number\n");
-	printf("-s              --stdin                      read fron stdin\n");
-	printf("-d              --data                       set environment-array\n");
-	printf("-o              --out                        print env-array to stdout after computation\n");
-	printf("-p              --print                      same as -o but with newline added.\n");
+	printf("-i              --shell         interactive (shell mode)\n");
+	printf("-h              --help          show this help\n");
+	printf("-v              --version       prints brainfuck-ng version number\n");
+	printf("-s              --stdin         read bf prog from stdin\n");
+	printf("-d 'datum'      --data          set environment-array\n");
+	printf("-o              --out           print env-array to stdout after computation\n");
+	printf("-p              --print         same as -o but with newline added.\n");
+	printf("-x 'prog'       --exec          gets & execute bf prog\n");
+	printf("-c              --cin           gets environment-array from stdin\n");
+	printf("-xf file        --xfile         gets bf prog from file\n");
+	printf("-df file        --dfile         gets environment-array from file\n");
 	exit(1);
 }
 void usage_b()
@@ -47,7 +55,7 @@ void usage_b()
 	printf("brainfuck-ng v%s (c) Fernando Iazeolla \n",VERSION);
 	printf("for help type: bfng --help\n");
 }
-char* parse_args(int argc,char **argv,struct m_action *action)
+void parse_args(int argc,char **argv,struct m_action *action,struct datas *dt)
 {
 	int c;
 	action->shell=0;
@@ -55,13 +63,17 @@ char* parse_args(int argc,char **argv,struct m_action *action)
 	action->stdin=0;
 	action->data=0;
 	action->print_env=0;
-	char *given_env=NULL;
+	action->cin=0;
+	action->exec=0;
+	action->xfile=0;
+	action->dfile=0;
+	//char *given_env=NULL;
 	ks=0;
 	while (1)
 	{
 		static struct option long_options[] =
 		{
-			{"interactive",no_argument,0,'i'},
+			{"exec",required_argument,0,'x'},
 			{"shell",no_argument,0,'i'},
 			{"help",no_argument,0,'h'},
 			{"version",no_argument,0,'v'},
@@ -69,11 +81,14 @@ char* parse_args(int argc,char **argv,struct m_action *action)
 			{"out",no_argument,0,'o'},
 			{"print",no_argument,0,'p'},
 			{"data",required_argument,0,'d'},
+			{"cin",no_argument,0,'c'},
+			{"xfile",required_argument,0,'b'},
+			{"dfile",required_argument,0,'a'},
 			{0,0,0,0,}
-			
+
 		};
 		int option_index = 0;
-		c = getopt_long (argc, argv, "vhisd:op",long_options, &option_index);
+		c = getopt_long (argc, argv, "vhisd:opx:cb:a:",long_options, &option_index);
 		if (c == -1) break;
 		switch(c)
 		{
@@ -88,7 +103,7 @@ char* parse_args(int argc,char **argv,struct m_action *action)
 				break;
 			case 'd':
 				action->data=1;
-				given_env=optarg;
+				dt->given_env=optarg;
 				ks=1;
 				break;
 			case 'o':
@@ -96,6 +111,21 @@ char* parse_args(int argc,char **argv,struct m_action *action)
 				break;
 			case 'p':
 				action->print_env=2;
+				break;
+			case 'x':
+				action->exec=1;
+				dt->prog=optarg;
+				break;
+			case 'c':
+				action->cin=1;
+				break;
+			case 'a':
+				action->dfile=1;
+				dt->dfile=optarg;
+				break;
+			case 'b':
+				action->xfile=1;
+				dt->xfile=optarg;
 				break;
 			case 'h':
 			case '?':
@@ -105,9 +135,9 @@ char* parse_args(int argc,char **argv,struct m_action *action)
 				usage_b();
 				break;
 		}
-		
+
 	}
-	return given_env;
+	//return given_env;
 }
 void run (char *filename,char *given_env,struct mret *ret){
 	FILE *fp;
@@ -140,12 +170,18 @@ void runstdin(char *given_env,struct mret *ret){
 int main(int argc,char **argv)
 {
 	struct m_action action;
-	char filename[FILENAME_LEN],*given_env=NULL;
+	char filename[FILENAME_LEN];
+	//char *given_env=NULL;
 	struct mret ret;
 	ret.a=NULL;
 	ret.ret=0;
-	given_env=parse_args(argc,argv,&action);
-	
+	struct datas d;
+	d.given_env=NULL;
+	d.prog=NULL;
+	d.dfile=NULL;
+	d.xfile=NULL;
+	parse_args(argc,argv,&action,&d);
+
 	if(argc<2) usage_b();
 	if(optind<argc) {strncpy(filename,argv[optind],FILENAME_LEN);action.file=1;}
 	else{strncpy(filename,"<NULL>",FILENAME_LEN);action.file=0;}
@@ -155,21 +191,33 @@ int main(int argc,char **argv)
 		action.shell=0;
 		action.file=0;
 	}
+	if(action.cin){
+
+	}
+	if(action.dfile){
+
+	}
+	if(action.xfile){
+		
+	}
+	if(action.exec){
+
+	}
 	if(action.stdin){
-		runstdin(given_env,&ret);
+		runstdin(d.given_env,&ret);
 	}
 	if(action.file)
 	{
-		run(filename,given_env,&ret);
+		run(filename,d.given_env,&ret);
 	}
 	if(action.shell)
 	{
-		shell(given_env,&ret);
+		shell(d.given_env,&ret);
 	}
-	
+
 	log_d("Bye.");
 	if(action.print_env==1) printf("%s",ret.a);
 	if(action.print_env==2) printf("%s\n",ret.a);
-	if(ret.a && !given_env) free(ret.a);
+	if(ret.a && !d.given_env) free(ret.a);
 	return ret.ret;
 }

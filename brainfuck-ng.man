@@ -65,7 +65,7 @@ ng ENHANCEMENTS
 output the integer at the data pointer. ( printf("%d",*ptr) ).
 .TP
 .B ?
-gets an integer and dtore it  into the data pointer. ( scanf("%d",(char)ptr) ).
+gets an integer and store it  into the data pointer. ( scanf("%d",(char)ptr) ).
 .TP
 .B @
 quit returning data pointer value. ( return *ptr ).

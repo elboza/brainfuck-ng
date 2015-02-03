@@ -20,6 +20,12 @@ struct mret{
 	int ret;
 	char *a;
 };
+struct datas{
+	char *given_env;
+	char *prog;
+	char *xfile;
+	char *dfile;
+};
 void run (char *filename,char *given_env,struct mret *ret);
 
 #endif

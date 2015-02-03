@@ -5,6 +5,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<stdio.h>
+#include<ctype.h>
 // #include <editline/readline.h>
 // #include <editline/history.h>
 #include "main.h"
@@ -41,7 +42,7 @@ char *rtrim(char *s)
 
 char *trim(char *s)
 {
-	return rtrim(ltrim(s)); 
+	return rtrim(ltrim(s));
 }
 #ifdef HAVE_LIBREADLINE
 char* rl_gets (char *prompt)
