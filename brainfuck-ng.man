@@ -16,7 +16,7 @@ give an environment as a string (seen as an array).
 .P
 For example,
 .B bfng -d 'FooBar' -i
-will will enter the shell mode with the datum 'FooBar' as the computation environment array.
+will enter the shell mode with the \fIdatum\fP 'FooBar' as the computation environment array.
 .TP
 .B -h, --help
 print usage info
@@ -31,49 +31,60 @@ show brainfuck-ng's version number
 print the environment array to stdout after computation.
 .TP
 .B -p, --print
-same as -o but with newline added. '\n'
+same as -o but with newline added. '\\n'
 .TP
+.B -x 'datum', --exec 'datum'
+get & execute bf prog datum.
+.TP
+.B -c, --cin
+read environment-array from stdin.
+.TP
+.B -b file, --xfile file
+read bf prog from file.
+.TP
+.B -a file ,dfile file
+read environment-array from file.
 .SH BRAINFUCK-NG'S LANGUAGE
 .TP
 .B <
-decrement the data pointer (to point to the next cell to the left). ( --ptr ).
+decrement the data pointer (to point to the next cell to the left). ( \fB--ptr\fP ).
 .TP
 .B >
-increment the data pointer (to point to the next cell to the right). ( ++ptr ).
+increment the data pointer (to point to the next cell to the right). ( \fB++ptr\fP ).
 .TP
 .B +
-increment (increase by one) the byte at the data pointer. ( ++*ptr ).
+increment (increase by one) the byte at the data pointer. ( \fB++*ptr\fP ).
 .TP
 .B -
-decrement (decrease by one) the byte at the data pointer. ( --*ptr ).
+decrement (decrease by one) the byte at the data pointer. ( \fB--*ptr\fP ).
 .TP
 .B .
-output the byte at the data pointer. ( putchar(*ptr) ).
+output the byte at the data pointer. ( \fBputchar(*ptr)\fP ).
 .TP
 .B ,
-accept one byte of input, storing its value in the byte at the data pointer. ( *ptr=getchar() ).
+accept one byte of input, storing its value in the byte at the data pointer. ( \fB*ptr=getchar()\fP ).
 .TP
 .B [
-if the byte at the data pointer is zero, then instead of moving the instruction pointer forward to the next command, jump it forward to the command after the matching ] command. ( while (*ptr) { ).
+if the byte at the data pointer is zero, then instead of moving the instruction pointer forward to the next command, jump it forward to the command after the matching ] command. ( \fBwhile (*ptr) {\fP ).
 .TP
 .B ]
-if the byte at the data pointer is nonzero, then instead of moving the instruction pointer forward to the next command, jump it back to the command after the matching [ command. ( } ).
+if the byte at the data pointer is nonzero, then instead of moving the instruction pointer forward to the next command, jump it back to the command after the matching [ command. ( \fB}\fP ).
 .TP
 ng ENHANCEMENTS
 .TP
 .B !
-output the integer at the data pointer. ( printf("%d",*ptr) ).
+output the integer at the data pointer. ( \fBprintf("%d",*ptr)\fP ).
 .TP
 .B ?
-gets an integer and store it  into the data pointer. ( scanf("%d",(char)ptr) ).
+gets an integer and store it  into the data pointer. ( \fBscanf("%d",(char)ptr)\fP ).
 .TP
 .B @
-quit returning data pointer value. ( return *ptr ).
+quit returning data pointer value. ( \fBreturn *ptr\fP ).
 .TP
 every other character is ignored.
 .SH RETURN VALUE
 .TP
-brainfuck-ng's interpreter always return the value poited at the last instruction executed.
+brainfuck-ng's interpreter \fIalways\fP return the value pointed at the last instruction executed.
 .TP
 example:
 echo "+++>++" | bfng -s
@@ -81,7 +92,7 @@ echo "+++>++" | bfng -s
 echo $?
 (will output 2)
 .TP
-by adding -o or -p parameter you can get also the environment printed to stdout.
+by adding \fB-o\fP or \fB-p\fP parameter you can get also the environment printed to stdout.
 .TP
 example:
 echo "+" | bfng -s -d'foo' -p
@@ -90,16 +101,36 @@ echo "+" | bfng -s -d'foo' -p
 
 echo $?
 (will output 103 (ascii of 'g'))
+.SH INTERPTETER COMMANDS
+in shell interactive mode you can give brainfuck-ng interpreter the following command:
+.TP
+.B :q
+quit interpreter
+.TP
+.B :h
+print help summary
+.TP
+.B :ks (yes|no)
+\fI:ks\fP print the keep state variable. \fI:ks yes\fP or \fI:ks no\fP set the keep state variable. The keep state variable can retain the value of the environment-array between line input.
+.TP
+.B :p
+print the environment-array to stdout (added with \\n endline).
+.TP
+.B :set datum
+set the environment-array to \fIdatum\fP (and set \fI:ks yes\fP)
+.TP
+.B :z
+print the last return value to stdout
 .SH EXAMPLES
 
 .SH SEE ALSO
-
+http://github.com/elboza/brainfuck-ng/ or http://bitbucket.org/elboza/brainfuck-ng/
 .SH AUTHOR
 .nf
-Fernando Iazeolla < fernando.iazeolla_FOobAr_gmail_Baz_com, by replacing _fOoBar_ with a @ and _Baz_ with a . > - founder & core developer.
+Fernando Iazeolla < xnando@cryptolab.net >
 .SH COPYRIGHT
 .nf
-Copyright (C) 2015 Fernando Iazeolla < fernando.iazeolla_FOobAr_gmail_Baz_com, by replacing _fOoBar_ with a @ and _Baz_ with a . >
+Copyright (C) 2015 Fernando Iazeolla < xnando@cryptolab.net >
 .P
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
