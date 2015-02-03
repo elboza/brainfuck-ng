@@ -31,6 +31,17 @@ void die(char *s){
 	printf("%s\n",s);
 	exit(1);
 }
+void reset_actions(struct m_action *action){
+	action->shell=0;
+	action->file=0;
+	action->stdin=0;
+	action->data=0;
+	action->print_env=0;
+	action->cin=0;
+	action->exec=0;
+	action->xfile=0;
+	action->dfile=0;
+}
 void usage()
 {
 	printf("brainfuck-ng v%s\n",VERSION);
@@ -46,8 +57,8 @@ void usage()
 	printf("-p              --print         same as -o but with newline added.\n");
 	printf("-x 'prog'       --exec          gets & execute bf prog\n");
 	printf("-c              --cin           gets environment-array from stdin\n");
-	printf("-xf file        --xfile         gets bf prog from file\n");
-	printf("-df file        --dfile         gets environment-array from file\n");
+	printf("-b  file        --xfile         gets bf prog from file\n");
+	printf("-a  file        --dfile         gets environment-array from file\n");
 	exit(1);
 }
 void usage_b()
@@ -58,15 +69,7 @@ void usage_b()
 void parse_args(int argc,char **argv,struct m_action *action,struct datas *dt)
 {
 	int c;
-	action->shell=0;
-	action->file=0;
-	action->stdin=0;
-	action->data=0;
-	action->print_env=0;
-	action->cin=0;
-	action->exec=0;
-	action->xfile=0;
-	action->dfile=0;
+	reset_actions(action);
 	//char *given_env=NULL;
 	ks=0;
 	while (1)
@@ -118,10 +121,12 @@ void parse_args(int argc,char **argv,struct m_action *action,struct datas *dt)
 				break;
 			case 'c':
 				action->cin=1;
+				ks=1;
 				break;
 			case 'a':
 				action->dfile=1;
 				dt->dfile=optarg;
+				ks=1;
 				break;
 			case 'b':
 				action->xfile=1;
@@ -161,11 +166,32 @@ void shell(char *given_env,struct mret *ret){
 	printf("Bye.\n");
 }
 void runstdin(char *given_env,struct mret *ret){
-	char *prog=(char*)malloc(1024);
+	char *prog=(char*)malloc(STDIN_LEN);
 	if(!prog) die("error alloc memory");
-	read(0,prog,1024);
+	read(0,prog,STDIN_LEN);
 	brainfuck(prog,given_env,ret);
 	free(prog);
+}
+char* get_dfile (char *filename){
+	FILE *fp;
+	long len;
+	char *v,dd[FILENAME_LEN];
+	if((fp=fopen(filename,"r"))==0) {printf("error opening file.\n");return NULL;}
+	fseek(fp,0L,SEEK_END);
+	len=ftell(fp);
+	fseek(fp,0L,SEEK_SET);
+	sprintf(dd,"%s %ld",filename,len);
+	log_d(dd);
+	v=(char*)calloc(0,len+1);
+	fread(v,1,len,fp);
+	fclose(fp);
+	return v;
+}
+char* get_cin(){
+	char *in=(char*)malloc(STDIN_LEN);
+	if(!in) die("error alloc memory");
+	read(0,in,STDIN_LEN);
+	return in;
 }
 int main(int argc,char **argv)
 {
@@ -185,23 +211,25 @@ int main(int argc,char **argv)
 	if(argc<2) usage_b();
 	if(optind<argc) {strncpy(filename,argv[optind],FILENAME_LEN);action.file=1;}
 	else{strncpy(filename,"<NULL>",FILENAME_LEN);action.file=0;}
-	if(action.stdin+action.file+action.shell>1){
-		printf("argument error. see bfng -h\n");
-		action.stdin=0;
-		action.shell=0;
-		action.file=0;
+	if(action.stdin+action.file+action.shell+action.xfile>1){
+		printf("argument incongruence input prog. see bfng -h\n");
+		reset_actions(&action);
+	}
+	if(action.data+action.dfile+action.cin>1){
+		printf("argument incongruence input env data. see bfng -h\n");
+		reset_actions(&action);
 	}
 	if(action.cin){
-
+		d.given_env=get_cin();
 	}
 	if(action.dfile){
-
+		d.given_env=get_dfile(d.dfile);
 	}
 	if(action.xfile){
-		
+		run(d.xfile,d.given_env,&ret);
 	}
 	if(action.exec){
-
+		brainfuck(d.prog,d.given_env,&ret);
 	}
 	if(action.stdin){
 		runstdin(d.given_env,&ret);

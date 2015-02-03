@@ -9,6 +9,7 @@
 //#define DEBUG 1
 #define DEBUG 0
 #define MAX_DIM 30000
+#define STDIN_LEN 1024*10
 #define HAVE_LIBREADLINE
 //#undef HAVE_LIBREADLINE
 #define FILENAME_LEN 255
