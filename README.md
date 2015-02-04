@@ -3,9 +3,9 @@
 ##Language overview
 Brainfuck-ng operates on an array of memory cells, also referred to as the tape, each initially set to zero. There is a pointer, initially pointing to the first memory cell. The commands are:
 
-| ------- | ------- |
+| -------------- | --------------- |
 | Command | Description |
-| -------- | ---------- |
+| -------------- | --------------- |
 | > | Move the pointer to the right                                               |
 | < | Move the pointer to the left                                                |
 | + | Increment the memory cell under the pointer                                 |
@@ -53,7 +53,8 @@ Brainfuck-ng always return the value of the cell pointed by the last instruction
  -c              --cin           gets environment-array from stdin
  -b  file        --xfile         gets bf prog from file
  -a  file        --dfile         gets environment-array from file
- ```
+ 
+```
  
 ###interpreter's interactive commands
 in shell interactive mode you can  give  brainfuck-ng  interpreter  the following command:
@@ -89,6 +90,7 @@ In the **ReverseFuck** mode all commands are switched to their semantic opposite
  !      input integer at current cell.
  ?      output integer from current cell.
  @      exit program returning current cel value( the only command not changed).
+
 ```
 
 You can switch to ReverseFuck mode by adding the *-r* or *--reversefuck* option to the *bfng* interpreter.
@@ -99,6 +101,7 @@ You can switch to ReverseFuck mode by adding the *-r* or *--reversefuck* option 
 
 ```
  ++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.
+
 ```
 
 This is a slightly more complex variant that often triggers interpreter bugs
@@ -106,6 +109,7 @@ This is a slightly more complex variant that often triggers interpreter bugs
 ```
  >++++++++[<+++++++++>-]<.>>+>+>++>[-]+<[>[->+<<++++>]<<]>.+++++++..+++.>
  >+++++++.<<<[[-]<[-]>]<+++++++++++++++.>>.+++.------.--------.>>+.>++++.
+
 ```
 
 ###bfng - The brainfuck-ng interpreter
@@ -116,6 +120,7 @@ This is a slightly more complex variant that often triggers interpreter bugs
  % echo "+++"|bfng -s
  % echo $?
  3           #(the putput)
+
 ```
 
 * give an environment and get the result:
@@ -128,18 +133,21 @@ This is a slightly more complex variant that often triggers interpreter bugs
  
  % echo "+"|bfng -d'foobar' -p
  goobar        #(the output)
+
 ```
 
 * give an environment and a program from files:
 
 ```
  % bfng -b program.bf -a env.data
+
 ```
 
 * simply execute a program
 
 ```
  % bfng HelloWorld.bf
+
 ```
 
 ##External resources
