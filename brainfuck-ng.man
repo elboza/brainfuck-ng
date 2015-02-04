@@ -5,7 +5,7 @@ brainfuck-ng - a powerful interpreter of a superset of brainfuck lang.
 .B bfng [ options ] [ file ]
 .SH DESCRIPTION
 .B brainfuck-ng
-is a powerful interpreter of a superset of brainfuck language. It is full compatible with brainfuck, and has in addition some enhancements.
+is a powerful interpreter of a superset of \fIbrainfuck\fP language. It is full compatible with brainfuck, and has in addition some enhancements.
 .SH OPTIONS
 .TP
 .B -i, --interactive, --shell
@@ -13,7 +13,6 @@ interactive (shell mode)
 .TP
 .B -d 'datum', --data 'datum'
 give an environment as a string (seen as an array).
-.P
 For example,
 .B bfng -d 'FooBar' -i
 will enter the shell mode with the \fIdatum\fP 'FooBar' as the computation environment array.
@@ -33,6 +32,9 @@ print the environment array to stdout after computation.
 .B -p, --print
 same as -o but with newline added. '\\n'
 .TP
+.B -r, --reversefuck
+switch 'ReverseFuck' mode on. (See the \fIReverseFuck mode\fP Section below).
+.TP
 .B -x 'datum', --exec 'datum'
 get & execute bf prog datum.
 .TP
@@ -45,6 +47,7 @@ read bf prog from file.
 .B -a file ,dfile file
 read environment-array from file.
 .SH BRAINFUCK-NG'S LANGUAGE
+brainfuck-ng operates on an array of memory cells, also referred to as the tape, each initially set to zero. There is a pointer, initially pointing to the first memory cell. The commands are:
 .TP
 .B <
 decrement the data pointer (to point to the next cell to the left). ( \fB--ptr\fP ).
@@ -84,7 +87,7 @@ quit returning data pointer value. ( \fBreturn *ptr\fP ).
 every other character is ignored.
 .SH RETURN VALUE
 .TP
-brainfuck-ng's interpreter \fIalways\fP return the value pointed at the last instruction executed.
+brainfuck-ng's interpreter \fIalways\fP return the value pointed by the last instruction executed.
 .TP
 example:
 echo "+++>++" | bfng -s
@@ -121,10 +124,83 @@ set the environment-array to \fIdatum\fP (and set \fI:ks yes\fP)
 .TP
 .B :z
 print the last return value to stdout
-.SH EXAMPLES
+.SH REVERSEFUCK MODE
+In the \fBReverseFuck\fP mode all commands are switched to their semantic opposite. Here is an overview:
 
+Instructions:
+
+.TP
+.B -
+Increments the current cell (under the pointer).
+.TP
+.B +
+Decrements the current cell (under the pointer).
+.TP
+.B >
+Decrements pointer.
+.TP
+.B <
+Increments pointer.
+.TP
+.B .
+Inputs a character to current cell.
+.TP
+.B ,
+Outputs a character from current cell.
+.TP
+.B ]
+While the current cell value is not zero, do stuff inside ] and [ braces
+.TP
+.B [
+End while.
+.TP
+.B !
+input integer at current cell.
+.TP
+.B ?
+output integer from current cell.
+.TP
+.B @
+exit program returning current cel value( the only command not changed).
+.TP
+You can switch to ReverseFuck mode by adding the \fI-r\fP or \fI--reversefuck\fP option to the \fBbfng\fP interpreter.
+.SH EXAMPLES
+.TP
+.B HelloWorld
+++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.
+.TP
+.B This is a slightly more complex variant that often triggers interpreter bugs
+>++++++++[<+++++++++>-]<.>>+>+>++>[-]+<[>[->+<<++++>]<<]>.+++++++..+++.>>+++++++.<<<[[-]<[-]>]<+++++++++++++++.>>.+++.------.--------.>>+.>++++.
+.TP
+.B get the return value:
+% echo "+++"|bfng -s
+
+% echo $?
+
+3           #(the putput)
+.TP
+.B give an environment and get the result:
+% echo "foobar"|bfng -c -x'+' -o
+
+goobar       #(the output)
+
+\fIor\fP
+
+% echo "+"|bfng -d'foobar' -p
+
+goobar        #(the output)
+.TP
+.B give an environment and a program from files:
+% bfng -b program.bf -a env.data
+.TP
+.B simply execute a program
+% bfng HelloWorld.bf
 .SH SEE ALSO
-http://github.com/elboza/brainfuck-ng/ or http://bitbucket.org/elboza/brainfuck-ng/
+* http://github.com/elboza/brainfuck-ng/
+
+* http://bitbucket.org/elboza/brainfuck-ng/
+
+* http://esolangs.org/wiki/Brainfuck-ng
 .SH AUTHOR
 .nf
 Fernando Iazeolla < xnando@cryptolab.net >
