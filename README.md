@@ -1,24 +1,51 @@
+#Brainfuck-ng
+
 **Brainfuck-ng** is a powerful interpreter of a superset of *brainfuck*  language.  It  is full compatible with brainfuck, and has in addition some enhancements.
+
+##Make & Install
+Once downloaded the source just:
+
+```
+make
+sudo make install
+```
+###help building and installing, and make options
+```
+make help
+```
+###build without libreadline
+```
+make WREADLINE=no
+sudo make install
+```
+###documentation
+```
+man bfng
+```
+or
+
+```
+man brainfuck-ng
+```
 
 ##Language overview
 Brainfuck-ng operates on an array of memory cells, also referred to as the tape, each initially set to zero. There is a pointer, initially pointing to the first memory cell. The commands are:
 
-| -------------- | --------------- |
-| Command | Description |
-| -------------- | --------------- |
-| > | Move the pointer to the right                                               |
-| < | Move the pointer to the left                                                |
-| + | Increment the memory cell under the pointer                                 |
-| - | Decrement the memory cell under the pointer                                 |
-| . | Output the character signified by the cell at the pointer                   |
-| , | Input a character and store it in the cell at the pointer                   |
-| `[` | Jump past the matching `]` if the cell under the pointer is 0             |
-| ] | Jump back to the matching [ if the cell under the pointer is nonzero        |
-| ( language extentions )                                                         |
-| ! | output the integer signified by the cell at the pointer                     |
-| ? | Input a character and store it in the cell at the pointer                   |
-| @ | exit execution and return the value pointed by the last execution executed. |
+```
 
+ >    Move the pointer to the right
+ <    Move the pointer to the left
+ +    Increment the memory cell under the pointer
+ -    Decrement the memory cell under the pointer
+ .    Output the character signified by the cell at the pointer 
+ ,    Input a character and store it in the cell at the pointer
+ [    Jump past the matching ] if the cell under the pointer is 0             
+ ]    Jump back to the matching [ if the cell under the pointer is nonzero
+ !    output the integer signified by the cell at the pointer 
+ ?    Input a character and store it in the cell at the pointer 
+ @    exit execution and return the value pointed by the last execution executed.
+   
+```
 
 All characters other than `><;+-.,[]!?@` should be considered comments and ignored. 
 
@@ -154,6 +181,6 @@ This is a slightly more complex variant that often triggers interpreter bugs
 
 * [brainfuck-ng on Github](http://github.com/elboza/brainfuck-ng/)
 * [brainfuck-ng on Bitbucket](http://bitbucket.org/elboza/brainfuck-ng)
-
+* [brainfuck wiki @ esolang](http://esolangs.org/wiki/Brainfuck-ng)
 
 
