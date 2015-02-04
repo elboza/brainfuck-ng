@@ -181,7 +181,7 @@ This is a slightly more complex variant that often triggers interpreter bugs
 
 * [brainfuck-ng on Github](http://github.com/elboza/brainfuck-ng/)
 * [brainfuck-ng on Bitbucket](http://bitbucket.org/elboza/brainfuck-ng)
-* [brainfuck wiki @ esolang](http://esolangs.org/wiki/Brainfuck-ng)
+* [brainfuck-ng wiki @ esolang](http://esolangs.org/wiki/Brainfuck-ng)
 
 ##That's all falks!
 
