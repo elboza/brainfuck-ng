@@ -66,6 +66,8 @@ in shell interactive mode you can  give  brainfuck-ng  interpreter  the followin
               keep state variable. The keep  state  variable  can  retain  the
               value of the environment-array between line input.
        :p     print the environment-array to stdout (added with \n endline).
+	   :r (yes|no)
+	          enable/disable/show reverse-fuck mode.
        :set datum
               set the environment-array to datum (and set :ks yes)
        :z     print the last return value to stdout
