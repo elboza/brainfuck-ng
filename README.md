@@ -3,7 +3,7 @@
 **Brainfuck-ng** is a powerful interpreter of a superset of *brainfuck*  language.  It  is full compatible with brainfuck, and has in addition some enhancements.
 
 ##Make & Install
-Once downloaded the source just:
+Once downloaded the source code, just:
 
 ```
 make
