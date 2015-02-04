@@ -27,6 +27,6 @@ struct datas{
 	char *xfile;
 	char *dfile;
 };
-void run (char *filename,char *given_env,struct mret *ret);
+void run (char *filename,char *given_env,struct mret *ret,int reversefuck);
 
 #endif

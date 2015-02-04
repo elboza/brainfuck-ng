@@ -21,6 +21,7 @@ struct m_action{
 	int exec;
 	int xfile;
 	int dfile;
+	int reversefuck;
 };
 void log_d(char *s){
 	if(!s) return;
@@ -41,6 +42,7 @@ void reset_actions(struct m_action *action){
 	action->exec=0;
 	action->xfile=0;
 	action->dfile=0;
+	action->reversefuck=0;
 }
 void usage()
 {
@@ -55,6 +57,7 @@ void usage()
 	printf("-d 'datum'      --data          set environment-array\n");
 	printf("-o              --out           print env-array to stdout after computation\n");
 	printf("-p              --print         same as -o but with newline added.\n");
+	printf("-r              --reversefuck   switch 'ReverseFuck' mode on.\n");
 	printf("-x 'prog'       --exec          gets & execute bf prog\n");
 	printf("-c              --cin           gets environment-array from stdin\n");
 	printf("-b  file        --xfile         gets bf prog from file\n");
@@ -87,11 +90,12 @@ void parse_args(int argc,char **argv,struct m_action *action,struct datas *dt)
 			{"cin",no_argument,0,'c'},
 			{"xfile",required_argument,0,'b'},
 			{"dfile",required_argument,0,'a'},
+			{"reversefuck",no_argument,0,'r'},
 			{0,0,0,0,}
 
 		};
 		int option_index = 0;
-		c = getopt_long (argc, argv, "vhisd:opx:cb:a:",long_options, &option_index);
+		c = getopt_long (argc, argv, "vhisd:opx:cb:a:r",long_options, &option_index);
 		if (c == -1) break;
 		switch(c)
 		{
@@ -114,6 +118,9 @@ void parse_args(int argc,char **argv,struct m_action *action,struct datas *dt)
 				break;
 			case 'p':
 				action->print_env=2;
+				break;
+			case 'r':
+				action->reversefuck=1;
 				break;
 			case 'x':
 				action->exec=1;
@@ -144,7 +151,7 @@ void parse_args(int argc,char **argv,struct m_action *action,struct datas *dt)
 	}
 	//return given_env;
 }
-void run (char *filename,char *given_env,struct mret *ret){
+void run (char *filename,char *given_env,struct mret *ret,int reversefuck){
 	FILE *fp;
 	long len;
 	char *v,dd[FILENAME_LEN];
@@ -157,19 +164,19 @@ void run (char *filename,char *given_env,struct mret *ret){
 	v=(char*)calloc(0,len+1);
 	fread(v,1,len,fp);
 	fclose(fp);
-	brainfuck(v,given_env,ret);
+	brainfuck(v,given_env,ret,reversefuck);
 	free(v);
 }
-void shell(char *given_env,struct mret *ret){
+void shell(char *given_env,struct mret *ret,int reversefuck){
 	printf("entering shell-interactive mode...(type :h for help)\n");
-	repl(given_env,ret);
+	repl(given_env,ret,reversefuck);
 	printf("Bye.\n");
 }
-void runstdin(char *given_env,struct mret *ret){
+void runstdin(char *given_env,struct mret *ret,int reversefuck){
 	char *prog=(char*)malloc(STDIN_LEN);
 	if(!prog) die("error alloc memory");
 	read(0,prog,STDIN_LEN);
-	brainfuck(prog,given_env,ret);
+	brainfuck(prog,given_env,ret,reversefuck);
 	free(prog);
 }
 char* get_dfile (char *filename){
@@ -226,21 +233,21 @@ int main(int argc,char **argv)
 		d.given_env=get_dfile(d.dfile);
 	}
 	if(action.xfile){
-		run(d.xfile,d.given_env,&ret);
+		run(d.xfile,d.given_env,&ret,action.reversefuck);
 	}
 	if(action.exec){
-		brainfuck(d.prog,d.given_env,&ret);
+		brainfuck(d.prog,d.given_env,&ret,action.reversefuck);
 	}
 	if(action.stdin){
-		runstdin(d.given_env,&ret);
+		runstdin(d.given_env,&ret,action.reversefuck);
 	}
 	if(action.file)
 	{
-		run(filename,d.given_env,&ret);
+		run(filename,d.given_env,&ret,action.reversefuck);
 	}
 	if(action.shell)
 	{
-		shell(d.given_env,&ret);
+		shell(d.given_env,&ret,action.reversefuck);
 	}
 
 	log_d("Bye.");

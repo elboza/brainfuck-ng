@@ -9,8 +9,8 @@
 #include "main.h"
 #include "brainfuck.h"
 
-void brainfuck(char *v,char *given_env,struct mret *ret){
-	char *a;
+void brainfuck(char *v,char *given_env,struct mret *ret,int reversefuck){
+	char *a,bf;
 	int len;
 	if(!given_env){
 		a=(char*)calloc(0,MAX_DIM);
@@ -24,7 +24,8 @@ void brainfuck(char *v,char *given_env,struct mret *ret){
 	char *ip=v,*ptr=a;
 	int x;
 	while(*ip){
-		switch(*ip){
+		if(reversefuck) bf=reversefuck_translate(*ip); else bf=*ip;
+		switch(bf){
 			case '<':
 				ptr--;if(ptr<a) ptr=a;
 				break;
@@ -94,3 +95,43 @@ void brainfuck(char *v,char *given_env,struct mret *ret){
 	 }
 	 return ++ip;
  }
+char reversefuck_translate(char c){
+	 char x=0;
+	 switch(c){
+		 case '<':
+			 x='>';
+			 break;
+		 case '>':
+			 x='<';
+			 break;
+		 case '+':
+			 x='-';
+			 break;
+		 case '-':
+			 x='+';
+			 break;
+		 case '[':
+			 x=']';
+			 break;
+		 case ']':
+			 x='[';
+			 break;
+		 case '.':
+			 x=',';
+			 break;
+		 case ',':
+			 x='.';
+			 break;
+		 case '!':
+			 x='?';
+			 break;
+		 case '?':
+			 x='!';
+			 break;
+		 default:
+			 x=c;
+			 break;
+	 }
+	 return x;
+}
+ 

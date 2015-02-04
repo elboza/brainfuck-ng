@@ -67,7 +67,7 @@ char* rl_gets (char *prompt)
 	return (line_read);
 }
 #endif
-void repl(char *given_env,struct mret *ret)
+void repl(char *given_env,struct mret *ret,int reversefuck)
 {
 	char *cmd,prompt[255];
 	quit_shell=0;
@@ -88,7 +88,7 @@ void repl(char *given_env,struct mret *ret)
 		fgets(cmd,MAX_CMD,stdin);
 		cmd[strlen(cmd) - 1] = '\0';
 		#endif
-		execute(cmd,given_env,ret);
+		execute(cmd,given_env,ret,&reversefuck);
 		if(ks==1){given_env=ret->a;}
 		if(ks==0){if(given_env){free(given_env);given_env=NULL;}}
 		#ifndef HAVE_LIBREADLINE
@@ -104,16 +104,18 @@ void show_help(){
 	//printf(":env              ~ show interpreter variables\n");
 	printf(":ks (yes|no)      ~ keep state environment array after command enter.\n");
 	printf(":p                ~ print environment-array to stdout\n");
-	printf(":z                ~ print last return value,\n");
+	printf(":z                ~ print last return value\n");
+	printf(":r (yes|no)       ~ enable/disable/show reverse-fuck mode.\n");
 	printf(":set datum        ~ set datum as enviroment array string (and keep state (:ks yes))\n");
 }
-void execute(char *s,char *given_env,struct mret *ret)
+void execute(char *s,char *given_env,struct mret *ret,int *reversefuck)
 {
 	char *ns=NULL;
 	if(!s) return;
 	if((strcmp(s,":q"))==0) {quit_shell=1;}
 	if((strcmp(s,":h"))==0) {show_help();}
 	if((strcmp(s,":ks"))==0) {(ks?printf("ks=yes\n"):printf("ks=no\n"));}
+	if((strcmp(s,":r"))==0) {(*reversefuck?printf("reverse-fuck=yes\n"):printf("reverse-fuck=no\n"));}
 	if((strcmp(s,":p"))==0) {if(given_env) printf("%s\n",given_env);}
 	if((strcmp(s,":z"))==0) {printf("%d\n",ret->ret);}
 	strtok_r(s," ",&ns);
@@ -123,12 +125,18 @@ void execute(char *s,char *given_env,struct mret *ret)
 			if((strcmp(ns,"no"))==0) ks=0;
 		}
 	}
+	if((strcmp(s,":r"))==0){
+		if(ns){
+			if((strcmp(ns,"yes"))==0) *reversefuck=1;
+			if((strcmp(ns,"no"))==0) *reversefuck=0;
+		}
+	}
 	if((strcmp(s,":set"))==0){
 		if(ns){
 			ks=1;
 			given_env=strdup(ns);
 		}
 	}
-	if((strcmp(s,":l"))==0){if(ns){run(trim(ns),given_env,ret);}}
-	brainfuck(s,given_env,ret);
+	if((strcmp(s,":l"))==0){if(ns){run(trim(ns),given_env,ret,*reversefuck);}}
+	brainfuck(s,given_env,ret,*reversefuck);
 }
