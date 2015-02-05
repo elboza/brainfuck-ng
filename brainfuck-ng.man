@@ -203,7 +203,7 @@ goobar        #(the output)
 % bfng HelloWorld.bf
 .TP
 .B get input and give output from bf program:
-% echo ",+++!"|bfng -s
+% bfng -x '?+++!'
 
 35                #(user keyboard input)
 
