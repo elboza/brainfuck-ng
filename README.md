@@ -183,7 +183,7 @@ This is a slightly more complex variant that often triggers interpreter bugs
 ```
  % echo ",+++!"|bfng -s
  35                #(user keyboard input)
- 36                #(program output)
+ 38                #(program output)
  % echo $?
  38
 

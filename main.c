@@ -58,7 +58,7 @@ void usage()
 	printf("-o              --out           print env-array to stdout after computation\n");
 	printf("-p              --print         same as -o but with newline added.\n");
 	printf("-r              --reversefuck   switch 'ReverseFuck' mode on.\n");
-	printf("-m size         --size          set the size (in bytes) of environment array (default is 32K).\n");
+	printf("-m size         --size          set the size (in bytes) of environment array.\n");
 	printf("-x 'prog'       --exec          gets & execute bf prog\n");
 	printf("-c              --cin           gets environment-array from stdin\n");
 	printf("-b  file        --xfile         gets bf prog from file\n");
