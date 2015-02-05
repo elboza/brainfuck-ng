@@ -8,8 +8,8 @@
 
 //#define DEBUG 1
 #define DEBUG 0
-#define MAX_DIM 30000
-#define STDIN_LEN 1024*10
+#define MAX_DIM 1024*30
+#define STDIN_LEN 1024*30
 #define HAVE_LIBREADLINE
 //#undef HAVE_LIBREADLINE
 #define FILENAME_LEN 255
@@ -20,6 +20,7 @@ void die(char *s);
 struct mret{
 	int ret;
 	char *a;
+	int size;
 };
 struct datas{
 	char *given_env;
@@ -28,5 +29,6 @@ struct datas{
 	char *dfile;
 };
 void run (char *filename,char *given_env,struct mret *ret,int reversefuck);
+int requested_size;
 
 #endif

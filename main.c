@@ -58,6 +58,7 @@ void usage()
 	printf("-o              --out           print env-array to stdout after computation\n");
 	printf("-p              --print         same as -o but with newline added.\n");
 	printf("-r              --reversefuck   switch 'ReverseFuck' mode on.\n");
+	printf("-m size         --size          set the size (in bytes) of environment array (default is 32K).\n");
 	printf("-x 'prog'       --exec          gets & execute bf prog\n");
 	printf("-c              --cin           gets environment-array from stdin\n");
 	printf("-b  file        --xfile         gets bf prog from file\n");
@@ -91,11 +92,12 @@ void parse_args(int argc,char **argv,struct m_action *action,struct datas *dt)
 			{"xfile",required_argument,0,'b'},
 			{"dfile",required_argument,0,'a'},
 			{"reversefuck",no_argument,0,'r'},
+			{"size",required_argument,0,'m'},
 			{0,0,0,0,}
 
 		};
 		int option_index = 0;
-		c = getopt_long (argc, argv, "vhisd:opx:cb:a:r",long_options, &option_index);
+		c = getopt_long (argc, argv, "vhisd:opx:cb:a:rm:",long_options, &option_index);
 		if (c == -1) break;
 		switch(c)
 		{
@@ -122,6 +124,9 @@ void parse_args(int argc,char **argv,struct m_action *action,struct datas *dt)
 			case 'r':
 				action->reversefuck=1;
 				break;
+				case 'm':
+					requested_size=atoi(optarg);
+					break;
 			case 'x':
 				action->exec=1;
 				dt->prog=optarg;
@@ -205,6 +210,7 @@ int main(int argc,char **argv)
 	struct m_action action;
 	char filename[FILENAME_LEN];
 	//char *given_env=NULL;
+	requested_size=0;
 	struct mret ret;
 	ret.a=NULL;
 	ret.ret=0;

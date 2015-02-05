@@ -13,8 +13,14 @@ void brainfuck(char *v,char *given_env,struct mret *ret,int reversefuck){
 	char *a,bf;
 	int len;
 	if(!given_env){
-		a=(char*)calloc(0,MAX_DIM);
-		len=MAX_DIM;
+		if(!requested_size){
+			a=(char*)calloc(0,MAX_DIM);
+			len=MAX_DIM;
+		}
+		else{
+			a=(char*)calloc(0,requested_size);
+			len=requested_size;
+		}
 	}
 	else{
 		a=given_env;
@@ -134,4 +140,3 @@ char reversefuck_translate(char c){
 	 }
 	 return x;
 }
- 

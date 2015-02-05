@@ -37,17 +37,17 @@ Brainfuck-ng operates on an array of memory cells, also referred to as the tape,
  <    Move the pointer to the left
  +    Increment the memory cell under the pointer
  -    Decrement the memory cell under the pointer
- .    Output the character signified by the cell at the pointer 
+ .    Output the character signified by the cell at the pointer
  ,    Input a character and store it in the cell at the pointer
- [    Jump past the matching ] if the cell under the pointer is 0             
+ [    Jump past the matching ] if the cell under the pointer is 0
  ]    Jump back to the matching [ if the cell under the pointer is nonzero
- !    output the integer signified by the cell at the pointer 
- ?    Input a character and store it in the cell at the pointer 
+ !    output the integer signified by the cell at the pointer
+ ?    Input a character and store it in the cell at the pointer
  @    exit execution and return the value pointed by the last execution executed.
-   
+
 ```
 
-All characters other than `><;+-.,[]!?@` should be considered comments and ignored. 
+All characters other than `><;+-.,[]!?@` should be considered comments and ignored.
 
 If no input environment array is given, the environment array is initially an array of a fixed dimension with all cells septed to zero . The initial dimension depends on interpreter implementation.
 
@@ -65,7 +65,7 @@ Brainfuck-ng always return the value of the cell pointed by the last instruction
 
 ```
  brainfuck-ng v0.1
- 
+
  USAGE: bfng [options] [file]
  valid options:
  -i              --shell         interactive (shell mode)
@@ -76,13 +76,14 @@ Brainfuck-ng always return the value of the cell pointed by the last instruction
  -o              --out           print env-array to stdout after computation
  -p              --print         same as -o but with newline added.
  -r              --reversefuck   switch 'ReverseFuck' mode on.
+ -m num          --size          set the size (in bytes) of environment array (default is 32K).
  -x 'prog'       --exec          gets & execute bf prog
  -c              --cin           gets environment-array from stdin
  -b  file        --xfile         gets bf prog from file
  -a  file        --dfile         gets environment-array from file
- 
+
 ```
- 
+
 ###interpreter's interactive commands
 in shell interactive mode you can  give  brainfuck-ng  interpreter  the following command:
 
@@ -155,9 +156,9 @@ This is a slightly more complex variant that often triggers interpreter bugs
 ```
  % echo "foobar"|bfng -c -x'+' -o
  goobar       #(the output)
- 
+
  or
- 
+
  % echo "+"|bfng -d'foobar' -p
  goobar        #(the output)
 
@@ -176,6 +177,25 @@ This is a slightly more complex variant that often triggers interpreter bugs
  % bfng HelloWorld.bf
 
 ```
+
+* get input and give output from bf program:
+
+```
+ % echo ",+++!"|bfng -s
+ 35                #(user keyboard input)
+ 36                #(program output)
+ % echo $?
+ 38
+
+```
+
+* enter interactive shell mode:
+
+```
+ % bfng -i
+
+```
+
 
 ##External resources
 

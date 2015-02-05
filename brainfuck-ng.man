@@ -35,6 +35,9 @@ same as -o but with newline added. '\\n'
 .B -r, --reversefuck
 switch 'ReverseFuck' mode on. (See the \fIReverseFuck mode\fP Section below).
 .TP
+.B -m num, --size num
+set the size (in bytes) of environment array (default is 32K).
+.TP
 .B -x 'datum', --exec 'datum'
 get & execute bf prog datum.
 .TP
@@ -198,6 +201,22 @@ goobar        #(the output)
 .TP
 .B simply execute a program
 % bfng HelloWorld.bf
+.TP
+.B get input and give output from bf program:
+% echo ",+++!"|bfng -s
+
+35                #(user keyboard input)
+
+36                #(program output)
+
+% echo $?
+
+38                #(output)
+
+.TP
+.B enter interactive shell mode:
+% bfng -i
+
 .SH SEE ALSO
 * http://github.com/elboza/brainfuck-ng/
 
