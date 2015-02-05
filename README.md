@@ -181,7 +181,7 @@ This is a slightly more complex variant that often triggers interpreter bugs
 * get input and give output from bf program:
 
 ```
- % echo ",+++!"|bfng -s
+ % bfng -x '?+++!'
  35                #(user keyboard input)
  38                #(program output)
  % echo $?
