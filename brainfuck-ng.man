@@ -207,7 +207,7 @@ goobar        #(the output)
 
 35                #(user keyboard input)
 
-36                #(program output)
+38                #(program output)
 
 % echo $?
 
