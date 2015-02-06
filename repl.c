@@ -79,7 +79,7 @@ void repl(char *given_env,struct mret *ret,int reversefuck)
 	#endif
 	while(!quit_shell)
 	{
-		sprintf(prompt,"bf~%d~ ",line_no++);
+		sprintf(prompt,"bfng~%d~ ",line_no++);
 		#ifdef HAVE_LIBREADLINE
 		cmd=rl_gets(prompt);
 		#else
