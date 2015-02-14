@@ -119,28 +119,32 @@ void execute(char *s,char *given_env,struct mret *ret,int *reversefuck)
 	if((strcmp(s,":p"))==0) {if(given_env) printf("%s\n",given_env);}
 	if((strcmp(s,":z"))==0) {printf("%d\n",ret->ret);}
 	if(*s==':'){
-		s2=strdup(s);
-		strtok_r(s," ",&ns);
-		if((strcmp(s,":ks"))==0){
-			if(ns){
-				if((strcmp(ns,"yes"))==0) ks=1;
-				if((strcmp(ns,"no"))==0) ks=0;
+		//s2=strdup(s);
+		s2=(char*)malloc(MAX_CMD+1);
+		if(s2!=NULL){
+			strncpy(s2,s,MAX_CMD-1);
+			strtok_r(s2," ",&ns);
+			if((strcmp(s2,":ks"))==0){
+				if(ns){
+					if((strcmp(ns,"yes"))==0) ks=1;
+					if((strcmp(ns,"no"))==0) ks=0;
+				}
 			}
-		}
-		if((strcmp(s,":r"))==0){
-			if(ns){
-				if((strcmp(ns,"yes"))==0) *reversefuck=1;
-				if((strcmp(ns,"no"))==0) *reversefuck=0;
+			if((strcmp(s2,":r"))==0){
+				if(ns){
+					if((strcmp(ns,"yes"))==0) *reversefuck=1;
+					if((strcmp(ns,"no"))==0) *reversefuck=0;
+				}
 			}
-		}
-		if((strcmp(s,":set"))==0){
-			if(ns){
-				ks=1;
-				given_env=strdup(ns);
+			if((strcmp(s2,":set"))==0){
+				if(ns){
+					ks=1;
+					given_env=strdup(ns);
+				}
 			}
+			if((strcmp(s2,":l"))==0){if(ns){run(trim(ns),given_env,ret,*reversefuck);}}
+			if(s2!=NULL) free(s2);
 		}
-		if((strcmp(s,":l"))==0){if(ns){run(trim(ns),given_env,ret,*reversefuck);}}
-		if(s2!=NULL) free(s2);
 	}
 	brainfuck(s,given_env,ret,*reversefuck);
 }
