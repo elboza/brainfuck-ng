@@ -35,7 +35,7 @@ $(TARGET): $(OBJECTS)
 
 msg:
 	@echo "making ${PNAME} >>> ${TARGET}"
-	@echo "type 'man help' for help"
+	@echo "type 'make help' for help"
 
 clean:
 	rm -f *.o
