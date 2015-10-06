@@ -64,7 +64,7 @@ Brainfuck-ng always return the value of the cell pointed by the last instruction
 ###usage
 
 ```
- brainfuck-ng v0.1
+ brainfuck-ng v0.2
 
  USAGE: bfng [options] [file]
  valid options:
@@ -81,6 +81,9 @@ Brainfuck-ng always return the value of the cell pointed by the last instruction
  -c              --cin           gets environment-array from stdin
  -b  file        --xfile         gets bf prog from file
  -a  file        --dfile         gets environment-array from file
+ -t  'datum'     --tr            translate 'datum' string to brainfuck
+ -S              --ts            translate stdin string to brainfuck
+ -F  file        --tf            translate file to brainfuck
 
 ```
 
@@ -100,6 +103,8 @@ in shell interactive mode you can  give  brainfuck-ng  interpreter  the followin
        :set datum
               set the environment-array to datum (and set :ks yes)
        :z     print the last return value to stdout
+       :tr datum
+	          translate datum string to brainfuck
 ```
 
 ##ReverseFuck mode
