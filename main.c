@@ -22,6 +22,9 @@ struct m_action{
 	int xfile;
 	int dfile;
 	int reversefuck;
+	int tr_string;
+	int tr_stdin;
+	int tr_file;
 };
 void log_d(char *s){
 	if(!s) return;
@@ -43,6 +46,9 @@ void reset_actions(struct m_action *action){
 	action->xfile=0;
 	action->dfile=0;
 	action->reversefuck=0;
+	action->tr_string=0;
+	action->tr_stdin=0;
+	action->tr_file=0;
 }
 void usage()
 {
@@ -63,6 +69,9 @@ void usage()
 	printf("-c              --cin           gets environment-array from stdin\n");
 	printf("-b  file        --xfile         gets bf prog from file\n");
 	printf("-a  file        --dfile         gets environment-array from file\n");
+	printf("-t  'datum'     --tr            translate 'datum' string to brainfuck\n");
+	printf("-S              --ts            translate stdin string to brainfuck\n");
+	printf("-F  file        --tf            translate file to brainfuck\n");
 	exit(1);
 }
 void usage_b()
@@ -93,11 +102,14 @@ void parse_args(int argc,char **argv,struct m_action *action,struct datas *dt)
 			{"dfile",required_argument,0,'a'},
 			{"reversefuck",no_argument,0,'r'},
 			{"size",required_argument,0,'m'},
+			{"tr",required_argument,0,'t'},
+			{"ts",no_argument,0,'S'},
+			{"tf",required_argument,0,'F'},
 			{0,0,0,0,}
 
 		};
 		int option_index = 0;
-		c = getopt_long (argc, argv, "vhisd:opx:cb:a:rm:",long_options, &option_index);
+		c = getopt_long (argc, argv, "vhisd:opx:cb:a:rm:t:SF:",long_options, &option_index);
 		if (c == -1) break;
 		switch(c)
 		{
@@ -124,9 +136,9 @@ void parse_args(int argc,char **argv,struct m_action *action,struct datas *dt)
 			case 'r':
 				action->reversefuck=1;
 				break;
-				case 'm':
-					requested_size=atoi(optarg);
-					break;
+			case 'm':
+				requested_size=atoi(optarg);
+				break;
 			case 'x':
 				action->exec=1;
 				dt->prog=optarg;
@@ -143,6 +155,18 @@ void parse_args(int argc,char **argv,struct m_action *action,struct datas *dt)
 			case 'b':
 				action->xfile=1;
 				dt->xfile=optarg;
+				break;
+			case 't':
+				action->tr_string=1;
+				dt->prog=optarg;
+				break;
+			case 'S':
+				action->tr_stdin=1;
+				//dt->prog=optarg;
+				break;
+			case 'F':
+				action->tr_file=1;
+				dt->dfile=optarg;
 				break;
 			case 'h':
 			case '?':
@@ -166,7 +190,7 @@ void run (char *filename,char *given_env,struct mret *ret,int reversefuck){
 	fseek(fp,0L,SEEK_SET);
 	sprintf(dd,"%s %ld",filename,len);
 	log_d(dd);
-	v=(char*)calloc(0,len+1);
+	v=(char*)calloc(len+1,sizeof(char));
 	fread(v,1,len,fp);
 	fclose(fp);
 	brainfuck(v,given_env,ret,reversefuck);
@@ -178,7 +202,7 @@ void shell(char *given_env,struct mret *ret,int reversefuck){
 	printf("Bye.\n");
 }
 void runstdin(char *given_env,struct mret *ret,int reversefuck){
-	char *prog=(char*)malloc(STDIN_LEN);
+	char *prog=(char*)calloc(STDIN_LEN,sizeof(char));
 	if(!prog) die("error alloc memory");
 	read(0,prog,STDIN_LEN);
 	brainfuck(prog,given_env,ret,reversefuck);
@@ -194,16 +218,29 @@ char* get_dfile (char *filename){
 	fseek(fp,0L,SEEK_SET);
 	sprintf(dd,"%s %ld",filename,len);
 	log_d(dd);
-	v=(char*)calloc(0,len+1);
+	v=(char*)calloc(len+1,sizeof(char));
 	fread(v,1,len,fp);
 	fclose(fp);
 	return v;
 }
 char* get_cin(){
-	char *in=(char*)malloc(STDIN_LEN);
+	char *in=(char*)calloc(STDIN_LEN,sizeof(char));
 	if(!in) die("error alloc memory");
 	read(0,in,STDIN_LEN);
 	return in;
+}
+void do_tr_string(char *str){
+	printf("%s\n",tr_pretty_str(str));
+}
+void do_tr_stdin(){
+	char *x;
+	x=get_cin();
+	printf("%s\n",tr_pretty_str(x));
+}
+void do_tr_file(char *filename){
+	char *x;
+	x=get_dfile(filename);
+	printf("%s\n",tr_pretty_str(x));
 }
 int main(int argc,char **argv)
 {
@@ -224,7 +261,7 @@ int main(int argc,char **argv)
 	if(argc<2) usage_b();
 	if(optind<argc) {strncpy(filename,argv[optind],FILENAME_LEN);action.file=1;}
 	else{strncpy(filename,"<NULL>",FILENAME_LEN);action.file=0;}
-	if(action.stdin+action.file+action.shell+action.xfile>1){
+	if(action.stdin+action.file+action.shell+action.xfile+action.tr_string+action.tr_stdin+action.tr_file>1){
 		printf("argument incongruence input prog. see bfng -h\n");
 		reset_actions(&action);
 	}
@@ -254,6 +291,15 @@ int main(int argc,char **argv)
 	if(action.shell)
 	{
 		shell(d.given_env,&ret,action.reversefuck);
+	}
+	if(action.tr_string){
+		do_tr_string(d.prog);
+	}
+	if(action.tr_stdin){
+		do_tr_stdin();
+	}
+	if(action.tr_file){
+		do_tr_file(d.dfile);
 	}
 
 	log_d("Bye.");

@@ -107,6 +107,7 @@ void show_help(){
 	printf(":z                ~ print last return value\n");
 	printf(":r (yes|no)       ~ enable/disable/show reverse-fuck mode.\n");
 	printf(":set datum        ~ set datum as enviroment array string (and keep state (:ks yes))\n");
+	printf(":tr datum         ~ translate datum string to brainfuck\n");
 }
 void execute(char *s,char *given_env,struct mret *ret,int *reversefuck)
 {
@@ -140,6 +141,11 @@ void execute(char *s,char *given_env,struct mret *ret,int *reversefuck)
 				if(ns){
 					ks=1;
 					given_env=strdup(ns);
+				}
+			}
+			if((strcmp(s2,":tr"))==0){
+				if(ns){
+					printf("%s\n",tr_pretty_str(strdup(ns)));
 				}
 			}
 			if((strcmp(s2,":l"))==0){if(ns){run(trim(ns),given_env,ret,*reversefuck);}}

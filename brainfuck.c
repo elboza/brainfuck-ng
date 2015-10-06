@@ -14,11 +14,11 @@ void brainfuck(char *v,char *given_env,struct mret *ret,int reversefuck){
 	int len;
 	if(!given_env){
 		if(!requested_size){
-			a=(char*)calloc(0,MAX_DIM);
+			a=(char*)calloc(MAX_DIM,sizeof(char));
 			len=MAX_DIM;
 		}
 		else{
-			a=(char*)calloc(0,requested_size);
+			a=(char*)calloc(requested_size,sizeof(char));
 			len=requested_size;
 		}
 	}
@@ -139,4 +139,34 @@ char reversefuck_translate(char c){
 			 break;
 	 }
 	 return x;
+}
+
+char* tr_char(char c){
+	int div=c/10;
+	int r=c%10;
+	char *x=(char*)calloc(20+div+r+5,sizeof(char));
+	char *p;
+	int n;
+	if(!x) return "";
+	p=x;
+	for(n=0;n<10;n++){*p++='+';}
+	*p++='[';*p++='>';
+	for(n=0;n<div;n++){*p++='+';}
+	*p++='<';*p++='-';*p++=']';*p++='>';
+	for(n=0;n<r;n++){*p++='+';}
+	*p++='.';*p++='[';*p++='-';*p++=']';
+	
+	return x;
+}
+char* tr_string(char *s){
+	char *str;
+	str=(char*)calloc(5,sizeof(char));
+	int n;
+	for(n=0;n<strlen(s);n++){
+		str=strcat(str,tr_char(s[n]));
+	}
+	return str;
+}
+char* tr_pretty_str(char *s){
+	return tr_string(s);
 }
