@@ -1,24 +1,24 @@
-#Brainfuck-ng
+# Brainfuck-ng
 
 **Brainfuck-ng** is a powerful interpreter of a superset of *brainfuck*  language.  It  is full compatible with brainfuck, and has in addition some enhancements.
 
-##Make & Install
+## Make & Install
 Once downloaded the source code, just:
 
 ```
 make
 sudo make install
 ```
-###help building and installing, and make options
+### help building and installing, and make options
 ```
 make help
 ```
-###build without libreadline
+### build without libreadline
 ```
 make WREADLINE=no
 sudo make install
 ```
-###documentation
+### documentation
 ```
 man bfng
 ```
@@ -28,7 +28,7 @@ or
 man brainfuck-ng
 ```
 
-##Language overview
+## Language overview
 Brainfuck-ng operates on an array of memory cells, also referred to as the tape, each initially set to zero. There is a pointer, initially pointing to the first memory cell. The commands are:
 
 ```
@@ -51,20 +51,20 @@ All characters other than `><;+-.,[]!?@` should be considered comments and ignor
 
 If no input environment array is given, the environment array is initially an array of a fixed dimension with all cells septed to zero . The initial dimension depends on interpreter implementation.
 
-##Return value
+## Return value
 
 Brainfuck-ng always return the value of the cell pointed by the last instruction executed.
 
-##bfng - The brainfuck-ng interpreter
+## bfng - The brainfuck-ng interpreter
 
-###repositories
+### repositories
 * [brainfuck-ng on Github](http://github.com/elboza/brainfuck-ng/)
 * [brainfuck-ng on Bitbucket](http://bitbucket.org/elboza/brainfuck-ng/)
 
-###usage
+### usage
 
 ```
- brainfuck-ng v0.2
+ brainfuck-ng v0.2.1
 
  USAGE: bfng [options] [file]
  valid options:
@@ -87,7 +87,7 @@ Brainfuck-ng always return the value of the cell pointed by the last instruction
 
 ```
 
-###interpreter's interactive commands
+### interpreter's interactive commands
 in shell interactive mode you can  give  brainfuck-ng  interpreter  the following command:
 
 ```
@@ -107,7 +107,7 @@ in shell interactive mode you can  give  brainfuck-ng  interpreter  the followin
 	          translate datum string to brainfuck
 ```
 
-##ReverseFuck mode
+## ReverseFuck mode
 In the **ReverseFuck** mode all commands are switched to their semantic opposite. Here is an overview:
 
 ```
@@ -128,9 +128,9 @@ In the **ReverseFuck** mode all commands are switched to their semantic opposite
 
 You can switch to ReverseFuck mode by adding the *-r* or *--reversefuck* option to the *bfng* interpreter.
 
-##Examples
+## Examples
 
-###Hello, World!
+### Hello, World!
 
 ```
  ++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.
@@ -145,7 +145,7 @@ This is a slightly more complex variant that often triggers interpreter bugs
 
 ```
 
-###bfng - The brainfuck-ng interpreter
+### bfng - The brainfuck-ng interpreter
 
 * get the return value:
 
@@ -202,13 +202,13 @@ This is a slightly more complex variant that often triggers interpreter bugs
 ```
 
 
-##External resources
+## External resources
 
 * [brainfuck-ng on Github](http://github.com/elboza/brainfuck-ng/)
 * [brainfuck-ng on Bitbucket](http://bitbucket.org/elboza/brainfuck-ng)
 * [brainfuck-ng wiki @ esolang](http://esolangs.org/wiki/Brainfuck-ng)
 
-##That's all falks!
+## That's all falks!
 
 ```
  _____

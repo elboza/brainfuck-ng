@@ -13,7 +13,7 @@
 #define HAVE_LIBREADLINE
 //#undef HAVE_LIBREADLINE
 #define FILENAME_LEN 255
-#define VERSION "0.2"
+#define VERSION "0.2.1"
 
 void log_d(char *s);
 void die(char *s);

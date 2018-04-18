@@ -57,10 +57,10 @@ void brainfuck(char *v,char *given_env,struct mret *ret,int reversefuck){
 				return;
 			break;
 			case '[':
-				if(*ptr==0) {ip=find_next_paren(++ip);--ip;}
+				if(*ptr==0) {ip=find_next_paren(++ip,reversefuck);--ip;}
 			break;
 			case ']':
-				if(*ptr!=0) {ip=find_prev_paren(--ip);--ip;}
+				if(*ptr!=0) {ip=find_prev_paren(--ip,reversefuck);--ip;}
 			break;
 			case ';':
 			break;
@@ -83,23 +83,27 @@ void brainfuck(char *v,char *given_env,struct mret *ret,int reversefuck){
 	ret->ret=*ptr;
 	ret->a=a;
  }
- char* find_next_paren(char *ip){
+ char* find_next_paren(char *ip,int reversefuck){
 	int nest=1;
+	char bf;
 	while(nest){
-		if(*ip=='[') {nest++;}
-		if(*ip==']') {nest--;}
+		if(reversefuck) bf=reversefuck_translate(*ip); else bf=*ip;
+		if(bf=='[') {nest++;}
+		if(bf==']') {nest--;}
 		++ip;
 	}
 	return --ip;
  }
- char* find_prev_paren(char *ip){
-	 int nest=1;
-	 while(nest){
-		 if(*ip==']') {nest++;}
-		 if(*ip=='[') {nest--;}
-		 --ip;
-	 }
-	 return ++ip;
+ char* find_prev_paren(char *ip,int reversefuck){
+	int nest=1;
+	char bf;
+	while(nest){
+		if(reversefuck) bf=reversefuck_translate(*ip); else bf=*ip;
+		if(bf==']') {nest++;}
+		if(bf=='[') {nest--;}
+		--ip;
+	}
+	return ++ip;
  }
 char reversefuck_translate(char c){
 	 char x=0;
